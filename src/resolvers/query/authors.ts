@@ -13,7 +13,7 @@ export const authorQuery = {
       const {id} = args
       const author = mockAuthors.find((author) => String(author.id) === id);
 
-      if(!author) throw new GraphQLError("Not Found", {
+      if(!author) throw new GraphQLError("No author found", {
         extensions: {
           code: "NOT_FOUND",
           http: {

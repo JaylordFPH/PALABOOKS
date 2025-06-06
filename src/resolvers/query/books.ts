@@ -16,8 +16,7 @@ export const bookQuery = {
         if (!mockBooks || mockBooks.length === 0) {
             throw new GraphQLError("No books found", {
                 extensions: {
-                    code: "NO_BOOKS",
-                    http: { status: 404 }
+                    code: "NOT_FOUND",  
                 }
             });
         }
