@@ -42,6 +42,10 @@ export const bookMutation = {
                 success: true,
                 message: "Book created successfully"
             }
+        },
+
+        updateBook: (_: unknown, args: {data: {title: string, genre: string, publishedYear: number, authorId: string}}) => {
+
         }
     }
 }
