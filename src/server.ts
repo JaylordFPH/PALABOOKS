@@ -3,6 +3,7 @@ import { authorSchema } from './typeDefs/authorDefs'
 import { bookSchema } from './typeDefs/bookDefs'
 import { bookQuery } from './resolvers/query/books'
 import {mergeTypeDefs} from '@graphql-tools/merge'
+import { bookMutation } from './resolvers/mutation/books'
 
 const typeDefs = mergeTypeDefs([
     authorSchema, 
@@ -12,6 +13,9 @@ const typeDefs = mergeTypeDefs([
 const resolvers = {
     Query: {
         ...bookQuery.Query,
+    },
+    Mutation: {
+        ...bookMutation.Mutation
     },
     Book: {
         ...bookQuery.Book
