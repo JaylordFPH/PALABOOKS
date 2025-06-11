@@ -9,7 +9,7 @@ This project showcases core GraphQL concepts such as queries, mutations, type re
 - Add, update, and delete books and authors
 - Relationships between books and their authors
 - Error handling with custom messages
-- Designed for learning, testing, and building on top of
+- Still adding more (Auth soon)
 
 ---
 
