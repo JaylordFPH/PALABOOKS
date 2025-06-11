@@ -8,35 +8,35 @@ export const mockAuthors = [
 
 export const mockBooks = [
   {
-    id: "101",
+    id: "1",
     title: "1984",
     genre: "Dystopian",
     publishedYear: 1949,
     authorId: "1"
   },
   {
-    id: "102",
+    id: "2",
     title: "Pride and Prejudice",
     genre: "Romance",
     publishedYear: 1813,
     authorId: "2"
   },
   {
-    id: "103",
+    id: "3",
     title: "Adventures of Huckleberry Finn",
     genre: "Adventure",
     publishedYear: 1884,
     authorId: "3"
   },
   {
-    id: "104",
+    id: "4",
     title: "Norwegian Wood",
     genre: "Drama",
     publishedYear: 1987,
     authorId: "4"
   },
   {
-    id: "105",
+    id: "5",
     title: "Half of a Yellow Sun",
     genre: "Historical Fiction",
     publishedYear: 2006,

@@ -16,7 +16,8 @@ export const bookSchema = gql`
 
   type Mutation {
     createBook(data: CreateBookInput!): BookMutationResponse!
-    updateBook(data: UpdateBookInput!): BookMutationResponse!
+    updateBook(id: ID!, data: UpdateBookInput!): BookMutationResponse!
+    deleteBook(id: ID!): BookMutationResponse!
   }
 
   input CreateBookInput {
@@ -27,10 +28,10 @@ export const bookSchema = gql`
   }
 
   input UpdateBookInput {
-    title: String!
-    genre: String!
-    publishedYear: Int! 
-    authorId: ID!
+    title: String
+    genre: String
+    publishedYear: Int
+    authorId: ID
   }
 
   #Reponse
