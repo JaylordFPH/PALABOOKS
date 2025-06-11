@@ -36,7 +36,7 @@ export const bookSchema = gql`
 
   #Reponse
   type BookMutationResponse {
-    id: ID!
+    id: ID
     success: Boolean!
     message: String!
   }

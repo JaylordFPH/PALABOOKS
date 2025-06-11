@@ -4,6 +4,7 @@ import { bookSchema } from './typeDefs/bookDefs'
 import { bookQuery } from './resolvers/query/books'
 import {mergeTypeDefs} from '@graphql-tools/merge'
 import { bookMutation } from './resolvers/mutation/books'
+import { authorMutation } from './resolvers/mutation/authors'
 
 const typeDefs = mergeTypeDefs([
     authorSchema, 
@@ -15,7 +16,8 @@ const resolvers = {
         ...bookQuery.Query,
     },
     Mutation: {
-        ...bookMutation.Mutation
+        ...bookMutation.Mutation,
+        ...authorMutation.Mutation
     },
     Book: {
         ...bookQuery.Book
@@ -24,9 +26,9 @@ const resolvers = {
     
 const server = new ApolloServer({
     typeDefs,
-    resolvers,
+    resolvers,  
 })
 
 server.listen().then(({url}) => {
-    console.log(`YOUR API IS RUNNING: ${url}`)
+    console.log(`Listening to ${url}`)
 })
