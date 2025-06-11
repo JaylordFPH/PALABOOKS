@@ -23,12 +23,13 @@ This project showcases core GraphQL concepts such as queries, mutations, type re
 ---
 
 ## Installation & Running Locally
-# 1. Clone the repo
-   git clone https://github.com/JaylordFPH/Simple-Bookstore-API
-   cd Simple-Bookstore-API
+```bash
+1. Clone the repo
+  git clone https://github.com/JaylordFPH/Simple-Bookstore-API
+  cd Simple-Bookstore-API
    
-# 2. Install dependencies
-   yarn
-
-# 3. Start the server
-   yarn dev
+2. Install dependencies
+  yarn
+   
+3. Start the server
+ yarn dev
