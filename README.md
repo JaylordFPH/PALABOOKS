@@ -32,4 +32,4 @@ This project showcases core GraphQL concepts such as queries, mutations, type re
   yarn
    
 3. Start the server
- yarn dev
+  yarn dev
