@@ -60,11 +60,8 @@ export const bookMutation = {
         },
 
         updateBook: (_: unknown, args: {id: string, data: {title: string, genre: string, publishedYear: number, authorId: string}}) => {
-
-
             try {
                 const bookIndex = mockBooks.findIndex(book => book.id === args.id);
-
                 if(bookIndex === -1) {
                     return {
                         id: null,
@@ -73,13 +70,11 @@ export const bookMutation = {
                     }
                 }
 
-
                 mockBooks[bookIndex] = {
                     ...mockBooks[bookIndex],
                     ...args.data
                 }
                 console.log(mockBooks[bookIndex])
-
                 
                 return {
                     id: args.id,
@@ -92,15 +87,48 @@ export const bookMutation = {
                         extensions: {
                             code: "INTERNAL_SERVER_ERROR"
                         }
-                    })
+                    });
                 }
+
+                //fallback 
+                throw new GraphQLError("Internal server error", {
+                    extensions: {
+                        code: "INTERNAL_SERVER_ERROR"
+                    }
+                });
             }
         },
 
         deleteBook: (_: unknown, args: {id: string}) => {
-            const bookIndex = mockBooks.findIndex(book => book.id === args.id);
-            if(bookIndex === -1){
-                
+            try {
+                const bookIndex = mockBooks.findIndex(book => book.id === args.id);
+                if(bookIndex === -1) return {
+                    id: null,
+                    success: false,
+                    message: "Book not found."
+                }
+
+                return {
+                    id: args.id,
+                    success: true,
+                    message: `Successfuly deleted ${mockBooks[bookIndex].title}.`
+                }
+                    
+            } catch (error) {
+                if(error instanceof Error){
+                    throw new GraphQLError("Internal server error.", {
+                        extensions: {
+                            code: "INTERNAL_SERVER_ERROR"
+                        }
+                    });
+                }
+
+                //fallback
+                throw new GraphQLError("Unknown error occured.", {
+                    extensions: {
+                        code: "INTERNAL_SERVER_ERROR"
+                    }
+                });
             }
         }
     },

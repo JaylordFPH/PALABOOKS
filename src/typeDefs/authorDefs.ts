@@ -13,11 +13,25 @@ export const authorSchema = gql`
   }
 
   type Mutation {
-    updateAuthor(id: ID!, data: EditAuthorInput!): Author
+    createAuthor(data: CreateAuthorInput!): AuthorMutationResponse!
+    updateAuthor(id: ID!, data: EditAuthorInput!): AuthorMutationResponse!
+    deleteAuthor(id: ID!): AuthorMutationResponse!
   }
 
   input EditAuthorInput {
     name: String
     nationality: String
+  }
+
+  input CreateAuthorInput {
+    name: String!
+    nationality: String!
+  }
+
+  #Response
+  type AuthorMutationResponse {
+    id: ID
+    success: Boolean!
+    message: String!
   }
 `

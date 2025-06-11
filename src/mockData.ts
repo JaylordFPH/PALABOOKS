@@ -43,3 +43,31 @@ export const mockBooks = [
     authorId: "5"
   }
 ];
+
+export const mockUsersAccount = [
+  {
+    id: '1',
+    username: 'user1',
+    password: 'password123',
+  },
+  {
+    id: '2',
+    username: 'user2',
+    password: 'password123',
+  },
+  {
+    id: '3',
+    username: 'admin',
+    password: 'admin1234',
+  },
+  {
+    id: '4',
+    username: 'user3',
+    password: 'password123',
+  },
+  {
+    id: '5',
+    username: 'user4',
+    password: 'password123!',
+  },
+]
