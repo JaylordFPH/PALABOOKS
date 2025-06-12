@@ -8,7 +8,7 @@ export const authorSchema = gql`
   }
   
   type Query {
-    getAllAuthors: [Author!]!
+    getAllAuthors: AuthorQueryResponse!
     findAuthor(id: ID!): Author
   }
 
@@ -33,5 +33,11 @@ export const authorSchema = gql`
     id: ID
     success: Boolean!
     message: String!
+  }
+
+  type AuthorQueryResponse {
+    success: Boolean!
+    message: String!
+    data: [Author!]
   }
 `

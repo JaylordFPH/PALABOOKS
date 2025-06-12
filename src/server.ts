@@ -1,10 +1,11 @@
 import {ApolloServer} from 'apollo-server'
-import { authorSchema } from './typeDefs/authorDefs'
-import { bookSchema } from './typeDefs/bookDefs'
-import { bookQuery } from './resolvers/query/books'
+import { authorSchema } from './graphql/typeDefs/authorDefs'
+import { bookSchema } from './graphql/typeDefs/bookDefs'
+import { bookQuery } from './graphql/resolvers/query/books'
 import {mergeTypeDefs} from '@graphql-tools/merge'
-import { bookMutation } from './resolvers/mutation/books'
-import { authorMutation } from './resolvers/mutation/authors'
+import { bookMutation } from './graphql/resolvers/mutation/books'
+import { authorMutation } from './graphql/resolvers/mutation/authors'
+import { authorQuery } from './graphql/resolvers/query/authors'
 
 const typeDefs = mergeTypeDefs([
     authorSchema, 
@@ -13,7 +14,8 @@ const typeDefs = mergeTypeDefs([
 
 const resolvers = {
     Query: {
-        ...bookQuery.Query,
+        // ...bookQuery.Query,
+        ...authorQuery.Query
     },
     Mutation: {
         ...bookMutation.Mutation,
