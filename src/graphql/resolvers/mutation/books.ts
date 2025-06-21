@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { mockAuthors, mockBooks } from "../../mockData";
+import { mockAuthors, mockBooks } from "../../../mockData";
 
 const authorMap = new Map(mockAuthors.map(author => [author.id, author]));
 
