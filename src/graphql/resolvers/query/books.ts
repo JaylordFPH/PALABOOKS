@@ -1,6 +1,6 @@
-import { mockBooks } from "../../mockData";
+import { mockBooks } from "../../../mockData";
 import { GraphQLError } from "graphql";
-import { mockAuthors } from "../../mockData";
+import { mockAuthors } from "../../../mockData";
 
 type Book = {
   id: string;

@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { mockAuthors } from '../../mockData'; // update the path as needed
+import { mockAuthors } from '../../../mockData'; // update the path as needed
 
 export const authorQuery = {
   Query: {
