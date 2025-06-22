@@ -13,7 +13,7 @@ export class AuthService {
     constructor(private prisma: PrismaClient) {}
 
     async login (email: string, password: string) {
-        const user =  this.prisma.user.findUnique({where: {email}});
+        const user = await this.prisma.user.findUnique({where: {email}});
         if(!user) {
             return response(false, "No user found.", null)
         }
