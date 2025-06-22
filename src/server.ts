@@ -6,10 +6,12 @@ import {mergeTypeDefs} from '@graphql-tools/merge'
 import { bookMutation } from './graphql/resolvers/mutation/books'
 import { authorMutation } from './graphql/resolvers/mutation/authors'
 import { authorQuery } from './graphql/resolvers/query/authors'
+import { createContext } from './lib/context'
 
 const typeDefs = mergeTypeDefs([
     authorSchema, 
-    bookSchema
+    bookSchema,
+    
 ])
 
 const resolvers = {
@@ -29,6 +31,7 @@ const resolvers = {
 const server = new ApolloServer({
     typeDefs,
     resolvers,  
+    context: createContext
 })
 
 server.listen().then(({url}) => {

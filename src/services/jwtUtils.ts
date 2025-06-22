@@ -10,7 +10,15 @@ interface DecodedToken {
     role?: "Admin" | "Reader" | "Author"
 }
 
-export function checkToken(userId: string){
+export function checkToken(userId?: string, tokenExpired?: boolean){
+    if(tokenExpired){
+        return{
+            success: false,
+            message: "Session Expired",
+            token: null
+        }
+    }
+
     if(!userId){
         return {
             success: false,
