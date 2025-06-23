@@ -13,4 +13,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id String @id @default(uuid())
+  firstname String?
+  middlename String?
+  lastname String?
+  gender String
+  dob DateTime
+  username String
+  email String @unique
+  password String
+
+  following Follow[] @relation("FollowingRelation")
+  follower Follow[] @relation("FollowerRelation")
+  created_at DateTime @default(now())
+}
+
+model Author {
+  id Int @id @default(autoincrement())
+  stories Story[]
+}
+
+model Story {
+  id Int @id @default(autoincrement())
+  title String
+  genre String
+  description String
+  content String @db.Text
+  readCount Int
+  authorId Int 
+  author Author @relation(fields: [authorId], references: [id])
+  created_at DateTime @default(now())
+}
+
+model Follow {
+  id Int @id @default(autoincrement())
+  followerId String 
+  followingId String
+
+  follower User @relation("FollowerRelation", fields: [followerId], references: [id])
+  following User @relation("FollowingRelation", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
 

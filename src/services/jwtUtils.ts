@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 // import dontenv from "dotenv"
 // dontenv.config()
+import { GraphQLError } from "graphql";
 
 const JWT_SECRET = process.env.ACESS_TOKEN_SECRET
 
@@ -10,23 +11,28 @@ interface DecodedToken {
     role?: "Admin" | "Reader" | "Author"
 }
 
-export function checkToken(userId?: string, tokenExpired?: boolean){
+export function checkToken(userId: string | undefined, tokenExpired?: boolean){
     if(tokenExpired){
-        return{
-            success: false,
-            message: "Session Expired",
-            token: null
-        }
+        throw new GraphQLError("Session expired", {
+            extensions: {
+                code: "TOKEN_EXPIRED"
+            }
+        })
     }
 
-    if(!userId){
-        return {
-            success: false,
-            message: "Not authenticated",
-            token: null
-        }
+        if(!userId) {
+        throw new GraphQLError("Not authenticated", {
+            extensions: {
+                code: "NOT_AUTHENTICATED"
+            }
+        })
     }
 }
+
+
+// export function isUserAuthorized(role: "Auther" | "Admin" | "Reader") {
+//     if(!role)
+// }
 
 export function signToken(payload: {userId: string, authorId?: string}){
     return jwt.sign(payload, JWT_SECRET!, {expiresIn: "7d"});
