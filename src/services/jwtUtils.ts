@@ -1,15 +1,19 @@
 import jwt from "jsonwebtoken";
-// import dontenv from "dotenv"
-// dontenv.config()
 import { GraphQLError } from "graphql";
 
-const JWT_SECRET = process.env.ACESS_TOKEN_SECRET
+const ACCESS_TOKEN = process.env.ACESS_TOKEN_SECRET
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN_SECRET
 
-interface DecodedToken {
+interface TokenPayload {
     userId: string
-    authorId?: string
-    role?: "Admin" | "Reader" | "Author"
 }
+
+type TokenWithClaims = TokenPayload & {
+    iat?: number
+    exp?: number
+    bf?: number
+}
+
 
 export function checkToken(userId: string | undefined, tokenExpired?: boolean){
     if(tokenExpired){
@@ -21,23 +25,37 @@ export function checkToken(userId: string | undefined, tokenExpired?: boolean){
     }
 
         if(!userId) {
-        throw new GraphQLError("Not authenticated", {
+        throw new GraphQLError("Unauthenticated", {
             extensions: {
-                code: "NOT_AUTHENTICATED"
+                code: "UNAUTHENTICATED"
             }
         })
     }
 }
 
 
-// export function isUserAuthorized(role: "Auther" | "Admin" | "Reader") {
-//     if(!role)
-// }
-
-export function signToken(payload: {userId: string, authorId?: string}){
-    return jwt.sign(payload, JWT_SECRET!, {expiresIn: "7d"});
+export function createAccessToken(payload: {userId: string}) {
+    return jwt.sign(payload, ACCESS_TOKEN!, {expiresIn: "15min"});
 }
 
-export function verifyToken(token: string): DecodedToken {
-    return jwt.verify(token, JWT_SECRET!) as DecodedToken;
+export function createRefreshToken(payload: {userId: string,}) {
+    return jwt.sign(payload, REFRESH_TOKEN!, {expiresIn: "7d"})
+}
+
+export function verifyAccessToken(token: string): TokenPayload {
+    return jwt.verify(token, ACCESS_TOKEN!) as TokenPayload;
+}
+
+export function actionRefreshToken(token: string): TokenPayload {
+    return jwt.verify(token, REFRESH_TOKEN!) as TokenPayload;
+}
+
+export function decodeToken(token: string): TokenWithClaims {
+    return jwt.decode(token) as TokenWithClaims;
+}
+
+export function stripTokenClaims(payload: TokenWithClaims): TokenPayload {
+    return {
+        userId: payload.userId
+    }
 }

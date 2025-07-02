@@ -1,14 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { prisma } from "./prismaConn";
-import { verifyToken } from "../services/jwtUtils";
-import { TokenExpiredError } from "jsonwebtoken";
+import { verifyAccessToken } from "../services/jwtUtils";
 import { AuthService } from "../services/authService";
 
 export type GraphQLContext = {
     prisma: PrismaClient
     userId?: string
-    authorId?: string
-    role?: "Admin" | "Reader" | "Author"
     tokenExpired?: boolean
     services: {
         authService: AuthService;
@@ -30,18 +27,16 @@ export async function createContext({req}: {req: Request}): Promise<GraphQLConte
     }
 
     try {
-        const decoded = verifyToken(token)
+        const decoded = verifyAccessToken(token)
         return {
             prisma,
             userId: decoded.userId,
-            authorId: decoded.userId,
-            role: decoded.role,
             services: {
                 authService,
             },
         }
     } catch (err) {
-        if(err instanceof TokenExpiredError){
+        if(err instanceof Error && err.name === "TokenExpiredError"){
             return {
                 prisma, 
                 tokenExpired: true, 

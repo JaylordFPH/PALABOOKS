@@ -3,8 +3,10 @@ import {gql} from 'apollo-server'
 export const authorSchema = gql`
   type Author {
     id: ID!
-    name: String!
-    nationality: String!    
+    userId: Int!
+    user: User!
+    stories: [Story!]!
+    created_at: String!
   }
   
   type Query {

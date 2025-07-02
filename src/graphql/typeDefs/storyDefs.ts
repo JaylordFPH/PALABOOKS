@@ -1,7 +1,7 @@
 import {gql} from 'apollo-server'
 
-export const bookSchema = gql`
-  type Book {
+export const storySchema = gql`
+  type Story {
     id: ID!
     title: String!
     genre: String!

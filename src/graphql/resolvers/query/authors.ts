@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { mockAuthors } from '../../../mockData'; // update the path as needed
 
-export const authorQuery = {
+export const authorQueries = {
   Query: {
     getAllAuthors: () => {
       try {

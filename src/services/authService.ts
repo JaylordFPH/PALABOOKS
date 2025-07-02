@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client"
-import { signToken } from "./jwtUtils";
+import { createAccessToken, createRefreshToken } from "./jwtUtils";
+import bcrypt from "bcrypt"
 
-function response(success: boolean, message: string, token: string | null){
+function response(success: boolean, message: string, accessToken: string | null, refreshToken: string | null) {
     return {
         success,
         message,
-        token
+        accessToken,
+        refreshToken
     }
 }
 
@@ -14,15 +16,16 @@ export class AuthService {
 
     async login (email: string, password: string) {
         const user = await this.prisma.user.findUnique({where: {email}});
-        if(!user) {
-            return response(false, "No user found.", null)
+
+        if(!user || (!await bcrypt.compare(user.password, password) )) {
+            return response(false, "Incorrect email or password.", null, null);
         }
 
-        if(user.password !== password) {
-            return response(false, "Incorrect email or password.", null);
+        const payload = {
+            userId: user.id,
         }
 
-        return signToken(user.id)
+        return response(true, "Login successful.", createAccessToken(payload), createRefreshToken(payload));
     }
 
 }

@@ -1,0 +1,43 @@
+import {gql} from 'apollo-server'
+
+export const userSchema = gql`
+  type User {
+    id: ID!
+    firstname: String
+    middlename: String
+    lastname: String
+    gender: String!
+    dob: DateTime
+    username: String!
+    email: String!
+    password: String!
+    author: Author
+    following: [Follow!]!
+    follower: [Follow!]!
+    created_at: DateTime!
+  }
+
+  type Query {
+    getAllUsers: UserOperationResponse!
+    findUser(id: ID!): UserOperationResponse!
+  }
+
+  type Mutation {
+    createUser(data: CreateUserInput!): UserOperationResponse!
+    updateUser(id: ID!, data: UpdateUserInput!): UserMutationResponse!
+    deleteUser(id: ID!): UserMutationResponse!
+  }
+
+  type UserOperationResponse {
+    success: Boolean!
+    message: String!
+    data: User 
+  }
+
+  input CreateUserInput {
+    username: String!
+    email: String!
+    password: String!
+    gender: String!
+  }
+`

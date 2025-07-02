@@ -19,11 +19,11 @@ model User {
   middlename String?
   lastname String?
   gender String
-  dob DateTime
-  username String
+  dob DateTime 
+  username String @unique
   email String @unique
   password String
-
+  author Author?
   following Follow[] @relation("FollowingRelation")
   follower Follow[] @relation("FollowerRelation")
   created_at DateTime @default(now())
@@ -31,7 +31,10 @@ model User {
 
 model Author {
   id Int @id @default(autoincrement())
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
   stories Story[]
+  created_at DateTime @default(now())
 }
 
 model Story {
@@ -39,7 +42,7 @@ model Story {
   title String
   genre String
   description String
-  content String @db.Text
+  content String @db.Text // limit breaker sheesh
   readCount Int
   authorId Int 
   author Author @relation(fields: [authorId], references: [id])
