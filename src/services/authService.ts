@@ -1,8 +1,16 @@
 import { PrismaClient } from "@prisma/client"
 import { createAccessToken, createRefreshToken } from "./jwtUtils";
 import bcrypt from "bcrypt"
+import { UserService } from "./userSerivce";
 
-function response(success: boolean, message: string, accessToken: string | null, refreshToken: string | null) {
+type Response = {
+    success: boolean;
+    message: string;
+    accessToken: string | null;
+    refreshToken: string | null;
+}
+
+function response(success: boolean, message: string, accessToken: string | null, refreshToken: string | null): Response {
     return {
         success,
         message,
@@ -14,10 +22,10 @@ function response(success: boolean, message: string, accessToken: string | null,
 export class AuthService {
     constructor(private prisma: PrismaClient) {}
 
-    async login (email: string, password: string) {
+    async login (email: string, password: string): Promise<Response> {
         const user = await this.prisma.user.findUnique({where: {email}});
 
-        if(!user || (!await bcrypt.compare(user.password, password) )) {
+        if(!user || (!await bcrypt.compare(password, user.password) )) { //plainText and hashed password comparison :D
             return response(false, "Incorrect email or password.", null, null);
         }
 
@@ -28,4 +36,16 @@ export class AuthService {
         return response(true, "Login successful.", createAccessToken(payload), createRefreshToken(payload));
     }
 
+    async signUp(username: string, email: string, password: string, gender: string, dob: string) {
+        const existingUser = await this.prisma.user.findUnique({where: {email}});
+        if(existingUser) {
+            return response(false, "Email already exists.", null, null);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const userService = new UserService(this.prisma);
+        const user = await userService.createUser({username, email, password: hashedPassword, gender, dob});
+
+        return response(true, "User created successfully.", createAccessToken({userId: user.id}), createRefreshToken({userId: user.id}));
+    }
 }

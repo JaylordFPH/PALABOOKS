@@ -1,10 +1,10 @@
-import { storyQueries } from "./query/books";
+import { authMutation } from "./mutation/auth"
 
 export const resolvers =  {
     Query: {
-        ...storyQueries,
+        
     },
     Mutation: {
-
+        ...authMutation.Mutation,
     },
 }
