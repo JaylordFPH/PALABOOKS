@@ -19,7 +19,7 @@ export class UserService {
                 email: data.email,
                 password: hashedPassword, 
                 gender: data.gender,
-                dob: data.dob //YYYY-MM-DD format
+                dob: new Date(data.dob)
             }
         })
     }

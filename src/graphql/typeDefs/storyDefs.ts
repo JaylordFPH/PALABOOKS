@@ -11,23 +11,23 @@ export const storySchema = gql`
   }
 
   type Query {
-    getAllBooks: [Book!]!
+    getAllStory: [Story!]!
   }
 
   type Mutation {
-    createBook(data: CreateBookInput!): BookMutationResponse!
-    updateBook(id: ID!, data: UpdateBookInput!): BookMutationResponse!
-    deleteBook(id: ID!): BookMutationResponse!
+    createStory(data: CreateStoryInput!): StoryOperationResponse!
+    updateStory(id: ID!, data: UpdateStoryInput!): StoryOperationResponse!
+    deleteStory(id: ID!): StoryOperationResponse!
   }
 
-  input CreateBookInput {
+  input CreateStoryInput {
     title: String!
     genre: String!
     publishedYear: Int! 
     authorId: ID!
   }
 
-  input UpdateBookInput {
+  input UpdateStoryInput {
     title: String
     genre: String
     publishedYear: Int
@@ -35,10 +35,10 @@ export const storySchema = gql`
   }
 
   #Reponse
-  type BookMutationResponse {
-    id: ID
+  type StoryOperationResponse {
     success: Boolean!
     message: String!
+    data: Story
   }
 
 `

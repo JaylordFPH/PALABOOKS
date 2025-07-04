@@ -1,7 +1,5 @@
 import { GraphQLContext } from "../../../lib/context";
-import { cookies} from "next/headers";
-import { GraphQLError } from "graphql";
-import { checkToken } from "../../../services/jwtUtils";
+import { formatGraphQLError } from "../../../utils/formatGraphQLError";
 
 type cookieOptionsType = {
   httpOnly: boolean,
@@ -21,52 +19,36 @@ const cookieOptions: cookieOptionsType = {
 
 export const authMutation = {
   Mutation: {
-    login: async (_: unknown, args: {data: {email: string, password: string}}, context: GraphQLContext) => {
+    login: async (_: unknown, args: {data: {email: string, password: string}}, context: GraphQLContext) => { 
+    
       const authService = context.services.authService;
       try {
-        const result = await authService.login(args.data.email, args.data.password);
+        const result = await authService.signIn(args.data.email, args.data.password);
 
         if(result.success && result.refreshToken) {
-          (await cookies()).set("refreshToken", result.refreshToken, cookieOptions);
+          console.log("Hit")
+          context.res!.cookie("refreshToken", result.refreshToken, cookieOptions);
         }
 
-        return {
-          success: false,
+        return {  
+          success: result.success,
           message: result.message,
           token: result.accessToken
         }
         
       } catch (error) {
-        if (error instanceof GraphQLError) {
-          throw error
-        }
-        
-        if(error instanceof Error) {
-          throw new GraphQLError(error.message, {
-            extensions: {
-              code: "INTERNAL_SERVER_ERROR",
-            }
-          });
-        };
-
-        throw new GraphQLError("An unexpected error occurred", {
-          extensions: {
-            code: "INTERNAL_SERVER_ERROR"
-          }
-        });
+        throw formatGraphQLError(error);
       }
- 
     },
 
-    signUp: async (_: unknown, args: {data: {username: string, email: string, password: string, gender: string, dob: string}}, context: GraphQLContext) => {
+    register: async (_: unknown, args: {data: {username: string, email: string, password: string, gender: string, dob: string}}, context: GraphQLContext) => {
       const { username, email, password, gender, dob } = args.data;
       try {
-        checkToken(context.userId, context.tokenExpired);
         const {authService} = context.services;
         const result = await authService.signUp(username, email, password, gender, dob);
 
         if(result.success && result.refreshToken) {
-          (await cookies()).set("refreshToken", result.refreshToken, cookieOptions);
+          context.res?.cookie("refreshToken", result.refreshToken, cookieOptions);
         }
 
         return {
@@ -77,18 +59,7 @@ export const authMutation = {
 
 
       } catch (error) {
-        if( error instanceof GraphQLError) {
-          throw error; 
-        }
-
-        if(error instanceof Error) {
-          throw new GraphQLError(error.message, {
-            extensions: {
-              code: "INTERNAL_SERVER_ERROR"
-            }
-          })
-        }
-          
+        throw formatGraphQLError(error);
       }
 
     }

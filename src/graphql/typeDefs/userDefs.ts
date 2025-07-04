@@ -7,14 +7,14 @@ export const userSchema = gql`
     middlename: String
     lastname: String
     gender: String!
-    dob: DateTime
+    dob: String!
     username: String!
     email: String!
     password: String!
     author: Author
-    following: [Follow!]!
-    follower: [Follow!]!
-    created_at: DateTime!
+    following: [Follow!]
+    follower: [Follow!]
+    created_at: String!
   }
 
   type Query {
@@ -24,8 +24,8 @@ export const userSchema = gql`
 
   type Mutation {
     createUser(data: CreateUserInput!): UserOperationResponse!
-    updateUser(id: ID!, data: UpdateUserInput!): UserMutationResponse!
-    deleteUser(id: ID!): UserMutationResponse!
+    updateUser(id: ID!, data: UpdateUserInput!): UserOperationResponse!
+    deleteUser(id: ID!): UserOperationResponse!
   }
 
   type UserOperationResponse {
@@ -39,5 +39,16 @@ export const userSchema = gql`
     email: String!
     password: String!
     gender: String!
+  }
+
+  input UpdateUserInput {
+    firstname: String
+    middlename: String
+    lastname: String
+    gender: String
+    dob: String
+    username: String
+    email: String
+    password: String
   }
 `
