@@ -7,6 +7,7 @@ export const usersQueries = {
             try {
                 checkToken(context.userId, context.tokenExpired);
                 
+                
             } catch (error) {
                 if (error instanceof GraphQLError) {
                     throw error

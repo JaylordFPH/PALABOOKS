@@ -3,6 +3,8 @@ import { prisma } from "./prismaConn";
 import { verifyAccessToken } from "../services/jwtUtils";
 import { AuthService } from "../services/authService";
 import { UserService } from "../services/userSerivce";
+import { Request, Response } from "express";
+import { TokenExpiredError } from "jsonwebtoken";
 
 export type GraphQLContext = {
     prisma: PrismaClient
@@ -10,24 +12,26 @@ export type GraphQLContext = {
     tokenExpired?: boolean
     services: {
         authService: AuthService;
-        userService?: UserService;
+        userService: UserService;
     }
+    res?: Response // Optional, if you need to set cookies or headers
 }
 
 const authService = new AuthService(prisma);
 const userService = new UserService(prisma);
 
-export async function createContext({req}: {req: Request}): Promise<GraphQLContext> {
-    const authHeaders = req.headers.get("Authorization");
+export async function createContext({req, res}: {req: Request, res: Response}): Promise<GraphQLContext> {
+    const authHeaders = req.headers.authorization;
     const token = authHeaders?.split(" ")[1]
 
-    if(!token){
+    if(!token){ 
         return {
             prisma, 
             services: {
                 authService,
                 userService
-            } 
+            },
+            res
         }
     }
 
@@ -42,14 +46,15 @@ export async function createContext({req}: {req: Request}): Promise<GraphQLConte
             },
         }
     } catch (err) {
-        if(err instanceof Error && err.name === "TokenExpiredError"){
+        if(err instanceof TokenExpiredError){
             return {
                 prisma, 
                 tokenExpired: true, 
                 services: {
                     authService,
                     userService
-                }
+                },
+                res
             }
         }
         //fallback for invalid token
@@ -59,6 +64,7 @@ export async function createContext({req}: {req: Request}): Promise<GraphQLConte
                 authService,
                 userService
             },
+            res
         }
     }
 }

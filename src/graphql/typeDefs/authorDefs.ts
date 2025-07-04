@@ -5,19 +5,19 @@ export const authorSchema = gql`
     id: ID!
     userId: Int!
     user: User!
-    stories: [Story!]!
+    stories: [Story!]
     created_at: String!
   }
   
   type Query {
-    getAllAuthors: AuthorQueryResponse!
-    findAuthor(id: ID!): Author
+    getAllAuthors: AuthorOperationResponse!
+    findAuthor(id: ID!): AuthorOperationResponse!
   }
 
   type Mutation {
-    createAuthor(data: CreateAuthorInput!): AuthorMutationResponse!
-    updateAuthor(id: ID!, data: EditAuthorInput!): AuthorMutationResponse!
-    deleteAuthor(id: ID!): AuthorMutationResponse!
+    createAuthor(data: CreateAuthorInput!): AuthorOperationResponse!
+    updateAuthor(id: ID!, data: EditAuthorInput!): AuthorOperationResponse!
+    deleteAuthor(id: ID!): AuthorOperationResponse!
   }
 
   input EditAuthorInput {
@@ -31,15 +31,10 @@ export const authorSchema = gql`
   }
 
   #Response
-  type AuthorMutationResponse {
-    id: ID
+  type AuthorOperationResponse {
     success: Boolean!
     message: String!
+    data: Author
   }
 
-  type AuthorQueryResponse {
-    success: Boolean!
-    message: String!
-    data: [Author!]
-  }
 `
