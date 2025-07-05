@@ -31,7 +31,7 @@ export const userSchema = gql`
   type UserOperationResponse {
     success: Boolean!
     message: String!
-    data: User 
+    data: [User!] 
   }
 
   input CreateUserInput {
@@ -39,6 +39,7 @@ export const userSchema = gql`
     email: String!
     password: String!
     gender: String!
+    dob: String!
   }
 
   input UpdateUserInput {

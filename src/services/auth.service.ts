@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import { createAccessToken, createRefreshToken } from "./jwtUtils";
 import bcrypt from "bcrypt"
-import { UserService } from "./userSerivce";
+import { UserService } from "./user.serivce";
 
 type Response = {
     success: boolean;

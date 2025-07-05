@@ -4,10 +4,12 @@ export const storySchema = gql`
   type Story {
     id: ID!
     title: String!
+    description: String!
+    content: String!
     genre: String!
-    publishedYear: Int!
     authorId: ID!
     author: Author!
+    created_at: String!
   }
 
   type Query {

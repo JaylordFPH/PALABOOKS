@@ -18,7 +18,7 @@ model User {
   firstname String?
   middlename String?
   lastname String?
-  gender String
+  gender Gender?
   dob DateTime 
   username String @unique
   email String @unique
@@ -58,5 +58,10 @@ model Follow {
   following User @relation("FollowingRelation", fields: [followingId], references: [id])
 
   @@unique([followerId, followingId])
+}
+
+enum Gender {
+  male
+  female
 }
 
