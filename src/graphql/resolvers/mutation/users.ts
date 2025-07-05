@@ -15,7 +15,7 @@ export const usersMutation = {
 
             try {
                 const {userService} = context.services
-                checkToken(context.userId, context.tokenExpired);
+                // checkToken(context.userId, context.tokenExpired);
                 const user = await userService.createUser(data)
                 return {
                     success: true,
