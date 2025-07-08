@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "main": "server.ts",
   "scripts": {
-    "dev": "nodemon ./src/server.ts"
+    "dev": "nodemon ./src/server.ts",
+    "seed": "ts-node ./prisma/seed.ts"
   },
   "repository": "https://github.com/JaylordFPH/Simple-Bookstore-API.git",
   "author": "JaylordFPH <JaySoguilonIS@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.29",

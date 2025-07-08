@@ -1,12 +1,18 @@
 import {gql} from 'apollo-server'
 
 export const userSchema = gql`
+
+  enum Gender {
+    male
+    female
+  }
+
   type User {
     id: ID!
     firstname: String
     middlename: String
     lastname: String
-    gender: String!
+    gender: Gender!
     dob: String!
     username: String!
     email: String!
@@ -31,7 +37,7 @@ export const userSchema = gql`
   type UserOperationResponse {
     success: Boolean!
     message: String!
-    data: [User!] 
+    data: [User!]
   }
 
   input CreateUserInput {

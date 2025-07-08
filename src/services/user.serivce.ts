@@ -1,5 +1,5 @@
-import { Gender, PrismaClient } from "@prisma/client";
-import { UserDTO } from "../types/dto/user.dto";
+import { PrismaClient } from "@prisma/client";
+import { CreateUserResponse, UsersWithRelationsDTO } from "../types/dto/user.dto";
 import bcrypt from "bcrypt";
 
 type Response <T extends object | null = null> = {
@@ -19,7 +19,7 @@ export class UserService {
     constructor(private prisma: PrismaClient) {}
 
     //temporary types
-    async createUser(data: {username: string, email: string, password: string, gender: Gender, dob: string}): Promise<Response <UserDTO | null>> {
+    async createUser(data: {username: string, email: string, password: string, gender: "male" | "female", dob: string}): Promise<Response <CreateUserResponse | null>> {
         const {username, email, password, gender, dob} = data;
         if (!username?.trim() || !email?.trim() || !password?.trim() || !dob?.trim()) {
             return response(false, "Missing required fields. Please fill in all registration details.", null)
@@ -36,34 +36,32 @@ export class UserService {
                 username: username,
                 email: email,
                 password: hashedPassword, 
-                gender: gender as Gender,
+                gender: gender as "male" | "female",
                 dob: new Date(dob)
             }
         })
 
-        const userDTO: UserDTO = {
+        const userDTO: CreateUserResponse = {
+            id: user.id,
             username: user.username,
             email: user.email,
-            gender: user.gender as Gender,
+            gender: user.gender as "male" | "female",
             dob: user.dob
         }
 
-        return response(true, "Successfully retrieved users data.", userDTO)
+        return response(true, "Successfully created a users.", userDTO)
     }
 
-    //no RBAC for now and temporary types
-    async getAllUsers(): Promise<Awaited<ReturnType<typeof this.prisma.user.findMany>>> {
-        return this.prisma.user.findMany({include: {
-            follower: {
-                select: {
-                    follower: true
-                }
-            },
-            following: {
-                select: {
-                    following: true
-                }
-            },
+    async getAllUsers(): Promise<Response<UsersWithRelationsDTO[] | null>> {
+        const users: UsersWithRelationsDTO[] = await this.prisma.user.findMany({select: {
+            id: true,
+            firstname: true,
+            middlename: true,
+            lastname: true,
+            dob: true,
+            gender: true,
+            username: true,
+            email: true,
             author: {
                 select: {
                     stories: {
@@ -72,12 +70,50 @@ export class UserService {
                             title: true,
                             description: true,
                             genre: true,
-                            readCount: true,
+                            read_count: true,
                             created_at: true
+                        }
+                    },
+                    created_at: true
+                },
+            },
+            follower: {
+                select: {
+                    follower: {
+                        select: {
+                            id: true,
+                            firstname: true,
+                            middlename: true,
+                            lastname: true,
+                            dob: true,
+                            gender: true,
+                            username: true,
+                            email: true,
+                            created_at: true,
                         }
                     }
                 }
-            }
-        }})
+            },
+            following: {
+                select: {
+                    following: {
+                        select: {
+                            id: true,
+                            firstname: true,
+                            middlename: true,
+                            lastname: true,
+                            dob: true,
+                            gender: true,
+                            username: true,
+                            email: true,
+                            created_at: true,
+                        }
+                    }
+                }
+            },
+            created_at: true
+        }});
+
+        return response(true, "Successfully retrieved users data.", users)
     }
 }

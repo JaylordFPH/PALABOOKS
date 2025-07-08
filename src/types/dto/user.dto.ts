@@ -1,24 +1,38 @@
-import { Gender } from "@prisma/client"
+import { FollowingDTO, FollowerDTO } from "./follow.dto"
+import { AuthorMinimalDTO } from "./author.dto"
 
-export type UserDTO = {
+export type CreateUserResponse = {
+    id: string
     username: string,
     email: string,
-    gender: Gender,
+    gender: "male" | "female" | null;
     dob: Date
 }
 
-export type UserWithRelationDTO = {
+export type UsersWithRelationsDTO = {
     id: string;
-    firstname: string;
-    middlename: string;
-    lastname: string;
-    gender: string;
+    firstname: string | null;
+    middlename: string | null;
+    lastname: string | null;
+    gender: "male" | "female" | null;
     dob: Date;
     username: string;
-    email: "male" | "female";
-    password: string;
-    author?: Author | null;
-    following: Follow[];
-    follower: Follow[];
+    email: string;
+    author?: AuthorMinimalDTO | null;
+    following: FollowingDTO[];
+    follower: FollowerDTO[];
+    created_at: Date;
+}
+
+export type UserMinimalDTO = {
+    id: string;
+    firstname: string | null;
+    middlename: string | null;
+    lastname: string | null;
+    gender: "male" | "female" | null;
+    dob: Date;
+    username: string;
+    email: string;
+    author?: AuthorMinimalDTO | null;
     created_at: Date;
 }

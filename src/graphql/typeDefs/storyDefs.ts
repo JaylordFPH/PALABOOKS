@@ -7,6 +7,7 @@ export const storySchema = gql`
     description: String!
     content: String!
     genre: String!
+    read_count: Int!
     authorId: ID!
     author: Author!
     created_at: String!
