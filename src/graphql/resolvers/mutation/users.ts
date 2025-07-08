@@ -4,7 +4,7 @@ import { checkToken } from "../../../services/jwtUtils";
 
 export const usersMutation = {
     Mutation: {
-        createUser: async (_: unknown, args: {data: {username: string, email: string, password: string, gender: string, dob: string}}, context: GraphQLContext) => {
+        createUser: async (_: unknown, args: {data: {username: string, email: string, password: string, gender: "male" | "female", dob: string}}, context: GraphQLContext) => {
             const data = {
                 username: args.data.username,
                 email: args.data.email,

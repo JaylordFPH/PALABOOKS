@@ -43,7 +43,7 @@ model Story {
   genre String
   description String
   content String @db.Text // limit breaker sheesh
-  readCount Int
+  read_count Int
   authorId Int 
   author Author @relation(fields: [authorId], references: [id])
   created_at DateTime @default(now())

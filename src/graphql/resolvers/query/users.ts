@@ -8,13 +8,12 @@ export const usersQueries = {
             try {
                 // checkToken(context.userId, context.tokenExpired);    
                 const {userService} = context.services
-                const users = await userService.getAllUsers()
-                console.log(users)
+                const res = await userService.getAllUsers()
 
                 return {
-                    success: true,
-                    message: "Successfully retrieved users list.",
-                    data: users
+                    success: res.success,
+                    message: res.message,
+                    data: res.data
                 }
                 
             } catch (error) {

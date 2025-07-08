@@ -41,7 +41,7 @@ export const authMutation = {
       }
     },
 
-    register: async (_: unknown, args: {data: {username: string, email: string, password: string, gender: string, dob: string}}, context: GraphQLContext) => {
+    register: async (_: unknown, args: {data: {username: string, email: string, password: string, gender: "male" | "female", dob: string}}, context: GraphQLContext) => {
       const { username, email, password, gender, dob } = args.data;
       try {
         const {authService} = context.services;

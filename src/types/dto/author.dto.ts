@@ -1,13 +1,6 @@
-import { User } from "@prisma/client";
+import { StoryMinimalDTO } from "./story.dto";
 
-export type AuthorDTO = {
-  id: number;
-  userId: string;
-  user?: User;
-  stories: Story[];
+export type AuthorMinimalDTO = {
+  stories: StoryMinimalDTO[]
   created_at: Date;
-};
-
-export type StoryDTO = {
-    
 }

@@ -3,14 +3,14 @@ import { createAccessToken, createRefreshToken } from "./jwtUtils";
 import bcrypt from "bcrypt"
 import { UserService } from "./user.serivce";
 
-type Response = {
+type authResponse = {
     success: boolean;
     message: string;
     accessToken: string | null;
     refreshToken: string | null;
 }
 
-function response(success: boolean, message: string, accessToken: string | null, refreshToken: string | null): Response {
+function response(success: boolean, message: string, accessToken: string | null, refreshToken: string | null): authResponse {
     return {
         success,
         message,
@@ -22,7 +22,7 @@ function response(success: boolean, message: string, accessToken: string | null,
 export class AuthService {
     constructor(private prisma: PrismaClient) {}
 
-    async signIn (email: string, password: string): Promise<Response> { 
+    async signIn (email: string, password: string): Promise<authResponse> { 
         if (!email?.trim() || !password?.trim()) {
             return response(false,  "Invalid email or password.", null, null)
         }
@@ -39,7 +39,7 @@ export class AuthService {
         return response(true, "Login successful.", createAccessToken(payload), createRefreshToken(payload));
     }
 
-    async signUp(username: string, email: string, password: string, gender: string, dob: string): Promise<Response> {
+    async signUp(username: string, email: string, password: string, gender: "male" | "female", dob: string): Promise<authResponse> {
         if (!username?.trim() || !email?.trim() || !password?.trim() || !gender?.trim() || !dob?.trim()) {
             return response(false, "Missing required fields. Please fill in all registration details.", null, null)
         }
@@ -51,7 +51,10 @@ export class AuthService {
 
         const userService = new UserService(this.prisma);
         const user = await userService.createUser({username, email, password, gender, dob});
+        const payload = {
+            userId: user.data!.id
+        }
 
-        return response(true, "User created successfully.", createAccessToken({userId: user.id}), createRefreshToken({userId: user.id}));
+        return response(true, "User created successfully.", createAccessToken(payload), createRefreshToken(payload));
     }
 }
