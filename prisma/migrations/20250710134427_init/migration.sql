@@ -4,7 +4,7 @@ CREATE TABLE `User` (
     `firstname` VARCHAR(191) NULL,
     `middlename` VARCHAR(191) NULL,
     `lastname` VARCHAR(191) NULL,
-    `gender` VARCHAR(191) NOT NULL,
+    `gender` ENUM('male', 'female') NULL,
     `dob` DATETIME(3) NOT NULL,
     `username` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `Story` (
     `genre` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `content` TEXT NOT NULL,
-    `readCount` INTEGER NOT NULL,
+    `read_count` INTEGER NOT NULL,
     `authorId` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
