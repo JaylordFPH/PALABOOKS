@@ -52,67 +52,71 @@ export class UserService {
         return response(true, "Successfully created a users.", userDTO)
     }
 
-    async getAllUsers(): Promise<Response<UsersWithRelationsDTO[] | null>> {
-        const users: UsersWithRelationsDTO[] = await this.prisma.user.findMany({select: {
-            id: true,
-            firstname: true,
-            middlename: true,
-            lastname: true,
-            dob: true,
-            gender: true,
-            username: true,
-            email: true,
-            author: {
-                select: {
-                    stories: {
-                        select: {
-                            id: true,
-                            title: true,
-                            description: true,
-                            genre: true,
-                            read_count: true,
-                            created_at: true
-                        }
+    async getAllUsers(take: number, skip: number): Promise<Response<UsersWithRelationsDTO[] | null>> {
+        const users: UsersWithRelationsDTO[] = await this.prisma.user.findMany({
+            select: {
+                id: true,
+                firstname: true,
+                middlename: true,
+                lastname: true,
+                dob: true,
+                gender: true,
+                username: true,
+                email: true,
+                author: {
+                    select: {
+                        stories: {
+                            select: {
+                                id: true,
+                                title: true,
+                                description: true,
+                                genre: true,
+                                read_count: true,
+                                created_at: true
+                            }
+                        },
+                        created_at: true
                     },
-                    created_at: true
                 },
-            },
-            follower: {
-                select: {
-                    follower: {
-                        select: {
-                            id: true,
-                            firstname: true,
-                            middlename: true,
-                            lastname: true,
-                            dob: true,
-                            gender: true,
-                            username: true,
-                            email: true,
-                            created_at: true,
+                follower: {
+                    select: {
+                        follower: {
+                            select: {
+                                id: true,
+                                firstname: true,
+                                middlename: true,
+                                lastname: true,
+                                dob: true,
+                                gender: true,
+                                username: true,
+                                email: true,
+                                created_at: true,
+                            }
                         }
                     }
-                }
-            },
-            following: {
-                select: {
-                    following: {
-                        select: {
-                            id: true,
-                            firstname: true,
-                            middlename: true,
-                            lastname: true,
-                            dob: true,
-                            gender: true,
-                            username: true,
-                            email: true,
-                            created_at: true,
+                },
+                following: {
+                    select: {
+                        following: {
+                            select: {
+                                id: true,
+                                firstname: true,
+                                middlename: true,
+                                lastname: true,
+                                dob: true,
+                                gender: true,
+                                username: true,
+                                email: true,
+                                created_at: true,
+                            }
                         }
                     }
-                }
+                },
+                created_at: true
             },
-            created_at: true
-        }});
+            skip: skip <= 1 ? 0 : skip,
+            take,
+        });
 
         return response(true, "Successfully retrieved users data.", users)
     }

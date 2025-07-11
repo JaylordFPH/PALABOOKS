@@ -24,7 +24,7 @@ export const userSchema = gql`
   }
 
   type Query {
-    getAllUsers: UserOperationResponse!
+    getAllUsers(pagination: OffsetPaginationInput!): UserOperationResponse!
     findUser(id: ID!): UserOperationResponse!
   }
 
@@ -37,7 +37,18 @@ export const userSchema = gql`
   type UserOperationResponse {
     success: Boolean!
     message: String!
-    data: [User!]
+    data: UserPaginationResponse
+  }
+
+  type UserPaginationResponse {
+    user: [User!]!
+    totalCount: Int!
+    hasNextPage: Boolean!
+  }
+
+  input OffsetPaginationInput {
+    take: Int!
+    skip: Int!
   }
 
   input CreateUserInput {
