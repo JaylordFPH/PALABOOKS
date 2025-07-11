@@ -28,6 +28,7 @@ model User {
   following Follow[] @relation("FollowingRelation")
   follower Follow[] @relation("FollowerRelation")
   created_at DateTime @default(now())
+  @@unique([created_at, id])
 }
 
 model Author {
