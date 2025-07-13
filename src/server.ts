@@ -5,6 +5,7 @@ import { resolvers } from './graphql/resolvers'
 import express, { Request, Response } from 'express'
 import { refreshTokenRouter } from './routes/refreshToken'
 
+
 const app = express()
 app.use("/refresh-token", refreshTokenRouter)
 
@@ -21,7 +22,7 @@ async function startServer() {
         cors: {
             origin: [
                 "https://studio.apollographql.com",
-                "http://localhost:3000"
+                "http://localhost:4000"
             ],
             credentials: true,
             methods: ['POST']
