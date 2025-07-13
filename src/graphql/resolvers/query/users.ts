@@ -6,7 +6,7 @@ export const usersQueries = {
     Query: {
         getAllUsers: async (_: unknown, {pagination}: {pagination: {take: number, skip: number}}, context: GraphQLContext) => {
             try {
-                // checkToken(context.userId, context.tokenExpired);   
+                checkToken(context.userId, context.tokenExpired);   
                 const {take, skip} = pagination
 
                 const {userService} = context.services
