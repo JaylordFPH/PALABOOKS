@@ -1,22 +1,19 @@
-import path from "path";
-import fs from "fs";
+import { GraphQLContext } from "../../../lib/context";
+
 
 export const testUploadMutation = {
     Mutation: {
-        singleUpload: async (_: unknown, {file}) => {
-            const {createReadStream, filename, mimetype, encoding} = await file;
-            const stream = createReadStream();
-            const pathName = path.join(__dirname, `../public/images/${filename}`);
-            await new Promise((resolver, reject) => {
-                stream.pipe(fs.createWriteStream(pathName))
-                  .on("finish", resolver)
-                  .on("error", reject)
+        saveUploadedFile: async (_: unknown, args: { url: string, filename: string, mimetype: string }, context: GraphQLContext) => {
+            const {url, filename, mimetype} = args
+            const file = await context.prisma.fileUpload.create({
+                data: {
+                    url,
+                    filename,
+                    mimetype,
+                },
             });
-            
-
-            return {
-                url: `http://localhost:4000/images/${filename}`,
-            }
-        }
-    }
+            return file;
+        },
+        
+    } 
 }

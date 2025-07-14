@@ -12,8 +12,9 @@
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
     "@types/bcrypt": "^5.0.2",
-    "@types/graphql-upload": "^17.0.0",
+    "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.15.29",
     "nodemon": "^3.1.10",
     "prisma": "^6.11.1",
@@ -31,7 +32,7 @@
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "graphql": "^16.11.0",
-    "graphql-upload": "^17.0.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1"
   }
 }

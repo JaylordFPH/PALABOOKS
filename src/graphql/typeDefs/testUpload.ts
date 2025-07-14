@@ -1,9 +1,12 @@
 import {gql} from 'apollo-server'
 
 export const testUpload = gql`
-  scalar Upload
-  type File {
+  type FileUpload {
+    id: ID!
     url: String!
+    filename: String!
+    mimetype: String!
+    createdAt: String!
   }
 
   type Query {
@@ -11,6 +14,6 @@ export const testUpload = gql`
   }
 
   type Mutation {
-    singleUpload(file: Upload!): File! 
+    saveUploadedFile(url: String!, filename: String!, mimetype: String!): FileUpload!
   }
 `
