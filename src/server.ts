@@ -24,7 +24,8 @@ async function startServer() {
         cors: {
             origin: [
                 "https://studio.apollographql.com",
-                "http://localhost:4000"
+                "http://localhost:4000",
+                "http://localhost:4000/uploads"
             ],
             credentials: true,
             methods: ['POST']
