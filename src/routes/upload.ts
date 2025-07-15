@@ -4,7 +4,7 @@ import path from 'path';
 
 const upload = multer({
   storage: multer.diskStorage({
-    destination: '../uploads',
+    destination: 'uploads/images',
     filename: (_, file, cb) => {
       cb(null, Date.now() + path.extname(file.originalname));
     },
@@ -26,3 +26,4 @@ uploadRouter.post('/', upload.single('file'), (req, res) => {
   });
   console.log("done")
 });
+
