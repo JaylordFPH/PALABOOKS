@@ -39,7 +39,7 @@ export async function createContext({req, res}: {req: Request, res: Response}): 
         const decoded = verifyAccessToken(token) //will throw an error if token is invalid or expired
         return {
             prisma,
-            userId: decoded.userId,
+            userId: decoded!.userId,
             services: {
                 authService,
                 userService

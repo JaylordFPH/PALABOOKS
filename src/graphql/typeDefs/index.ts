@@ -5,6 +5,7 @@ import { userSchema } from "./userDefs";
 import { followSchema } from "./followDefs";
 import { authSchema } from "./authDefs";
 import { testUpload } from "./testUpload";
+import { uploadSchema } from "./uploadDefs";
 
 export const typeDefs = mergeTypeDefs([
     authSchema,
@@ -12,6 +13,7 @@ export const typeDefs = mergeTypeDefs([
     storySchema,
     userSchema,
     followSchema,
-    testUpload
+    testUpload,
+    uploadSchema
     
 ]) 
