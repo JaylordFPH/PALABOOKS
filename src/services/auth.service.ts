@@ -32,6 +32,10 @@ export class AuthService {
             return response(false, "Incorrect email or password.", null, null);
         }
 
+        if(!user) {
+            return response(false, "Incorrect email or password.", null, null);
+        }
+
         const payload = {
             userId: user.id,
         }

@@ -25,9 +25,11 @@ model User {
   email String @unique
   password String
   author Author?
+  created_at DateTime @default(now())
+
   following Follow[] @relation("FollowingRelation")
   follower Follow[] @relation("FollowerRelation")
-  created_at DateTime @default(now())
+  upload Upload[]
   @@unique([created_at, id])
 }
 
@@ -73,5 +75,20 @@ model FileUpload {
 enum Gender {
   male
   female
+}
+
+model Upload {
+  id String @id @default(ulid())
+  userId String
+  fileName String
+  fileType String
+  fileSize Int
+  filePath String @unique
+  publicUrl String
+  uploaded Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 }
 

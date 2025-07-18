@@ -2,11 +2,11 @@ import { ApolloServer } from 'apollo-server-express'
 import { typeDefs } from './graphql/typeDefs'
 import { createContext } from './lib/context'
 import { resolvers } from './graphql/resolvers'
-import express, {  Request, Response } from 'express'
+import express, { Request, Response } from 'express'
 import { refreshTokenRouter } from './routes/refreshToken'
 import { uploadRouter } from './routes/upload'
 
-const app: any = express()
+const app = express()
 app.use("/refresh-token", refreshTokenRouter)
 app.use("/uploads", uploadRouter)
 
@@ -17,7 +17,7 @@ const server = new ApolloServer({
     csrfPrevention: true
 });
 
-async function startServer() {
+async function startServer() {  
     await server.start();
     server.applyMiddleware({
         app,
