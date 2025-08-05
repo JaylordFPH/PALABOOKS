@@ -29,7 +29,6 @@ uploadRouter.post('/', upload.single('file'), async (req, res) => {
 
   try {
     const {userId} = verifyAccessToken(token)
-    // const userId = "09643d22-1b2a-434b-832d-e02e6fa16a50"
     if(!userId) {
       return res.status(401).json({error: "Unauthenticated."});
     }
