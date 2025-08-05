@@ -1,4 +1,4 @@
-import { GraphQLContext } from "../../../lib/context";
+import { GraphQLContext } from "../../../../lib/context";
 
 export const uploadedQuery = {
     Query: {

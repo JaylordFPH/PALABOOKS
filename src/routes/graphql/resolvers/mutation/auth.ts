@@ -1,5 +1,5 @@
-import { GraphQLContext } from "../../../lib/context";
-import { formatGraphQLError } from "../../../utils/formatGraphQLError";
+import { GraphQLContext } from "../../../../lib/context";
+import { formatGraphQLError } from "../../../../utils/formatGraphQLError";
 
 type cookieOptionsType = {
   httpOnly: boolean,
@@ -20,13 +20,13 @@ const cookieOptions: cookieOptionsType = {
 export const authMutation = {
   Mutation: {
     login: async (_: unknown, args: {data: {email: string, password: string}}, context: GraphQLContext) => { 
-    
+  
+      const { email, password } = args.data;
       const authService = context.services.authService;
       try {
-        const result = await authService.signIn(args.data.email, args.data.password);
+        const result = await authService.signIn(email, password);
 
         if(result.success && result.refreshToken) {
-          console.log("Hit")
           context.res!.cookie("refreshToken", result.refreshToken, cookieOptions);
         }
 

@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server-express'
-import { typeDefs } from './graphql/typeDefs'
+import { typeDefs } from './routes/graphql/typeDefs'
 import { createContext } from './lib/context'
-import { resolvers } from './graphql/resolvers'
+import { resolvers } from './routes/graphql/resolvers'
 import express, { Request, Response } from 'express'
 import { refreshTokenRouter } from './routes/refreshToken'
 import { uploadRouter } from './routes/upload'
@@ -22,11 +22,7 @@ async function startServer() {
     server.applyMiddleware({
         app,
         cors: {
-            origin: [
-                "https://studio.apollographql.com",
-                "http://localhost:4000",
-                "http://localhost:4000/uploads"
-            ],
+            origin: "*",
             credentials: true,
             methods: ['POST']
         }

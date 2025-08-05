@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql"
-import { GraphQLContext } from "../../../lib/context"
-import { checkToken } from "../../../services/jwtUtils"
+import { GraphQLContext } from "../../../../lib/context"
+import { checkToken } from "../../../../services/jwtUtils"
 
 export const usersQueries = {
     Query: {

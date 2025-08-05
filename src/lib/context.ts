@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { prisma } from "./prismaConn";
 import { verifyAccessToken } from "../services/jwtUtils";
 import { AuthService } from "../services/auth.service";
-import { UserService } from "../services/user.serivce";
+import { UserService } from "../services/user.service";
 import { Request, Response } from "express";
 import { TokenExpiredError } from "jsonwebtoken";
 
