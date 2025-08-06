@@ -5,7 +5,8 @@ import { resolvers } from './graphql/resolvers'
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { router } from './routes'
-    
+import dotenv from 'dotenv'
+dotenv.config()
 
 const app = express()
 app.use(express.json());
@@ -23,6 +24,13 @@ const server = new ApolloServer({
     context: ({ req, res }: { req: Request, res: Response }) => createContext({ req, res }),
     csrfPrevention: true
 });
+
+if (!process.env.DATABASE_URL) {
+  console.error("❌ DATABASE_URL is missing");
+  process.exit(1); // optional: fail fast
+} else {
+  console.log("✅ DATABASE_URL loaded:", process.env.DATABASE_URL);
+}
 
 async function startServer() {  
     await server.start();
