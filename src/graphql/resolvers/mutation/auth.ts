@@ -1,5 +1,5 @@
-import { GraphQLContext } from "../../../../lib/context";
-import { formatGraphQLError } from "../../../../utils/formatGraphQLError";
+import { GraphQLContext } from "../../../lib/context";
+import { formatGraphQLError } from "../../../utils/formatGraphQLError";
 
 type cookieOptionsType = {
   httpOnly: boolean,
