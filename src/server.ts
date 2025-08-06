@@ -3,11 +3,17 @@ import { typeDefs } from './graphql/typeDefs'
 import { createContext } from './lib/context'
 import { resolvers } from './graphql/resolvers'
 import express, { Request, Response } from 'express'
+import cors from 'cors'
 import { router } from './routes'
     
 
 const app = express()
 app.use("/api", router)
+app.use(cors({
+    origin: "*",
+    credentials: true,
+    methods: ['POST', 'GET', 'PUT', 'DELETE']
+}));
 
 const server = new ApolloServer({ 
     typeDefs,
@@ -20,11 +26,11 @@ async function startServer() {
     await server.start();
     server.applyMiddleware({
         app,
-        cors: {
-            origin: "*",
-            credentials: true,
-            methods: ['POST']
-        }
+        // cors: {
+        //     origin: "*",
+        //     credentials: true,
+        //     methods: ['POST']
+        // }
     });
 
     app.listen({ port: 4000,}, () => {
