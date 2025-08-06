@@ -22,7 +22,7 @@ registerAccRouter.post("/", async (req: Request, res: Response) => {
                 username,
                 email,
                 password,
-                dob,
+                dob: new Date(dob),
             },
         });
         return res.status(201).json({ user });
