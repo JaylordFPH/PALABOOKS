@@ -1,14 +1,13 @@
 import { ApolloServer } from 'apollo-server-express'
-import { typeDefs } from './routes/graphql/typeDefs'
+import { typeDefs } from './graphql/typeDefs'
 import { createContext } from './lib/context'
-import { resolvers } from './routes/graphql/resolvers'
+import { resolvers } from './graphql/resolvers'
 import express, { Request, Response } from 'express'
-import { refreshTokenRouter } from './routes/refreshToken'
-import { uploadRouter } from './routes/upload'
+import { router } from './routes'
+    
 
 const app = express()
-app.use("/refresh-token", refreshTokenRouter)
-app.use("/uploads", uploadRouter)
+app.use("/api", router)
 
 const server = new ApolloServer({ 
     typeDefs,

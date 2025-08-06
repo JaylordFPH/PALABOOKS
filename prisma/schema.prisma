@@ -1,94 +1,63 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
-  connection_limit = 1 //for serverless
+  provider         = "prisma-client-js"
+  connection_limit = "1"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id String @id @default(uuid())
-  firstname String?
-  middlename String?
-  lastname String?
-  gender Gender?
-  dob DateTime 
-  username String @unique
-  email String @unique
-  password String
-  author Author?
-  created_at DateTime @default(now())
-
-  following Follow[] @relation("FollowingRelation")
-  follower Follow[] @relation("FollowerRelation")
-  upload Upload[]
-  @@unique([created_at, id])
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model author {
+  id         String   @id(map: "Author_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @unique(map: "Author_userId_key") @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  user       user     @relation(fields: [userId], references: [id], onUpdate: Restrict, map: "Author_userId_fkey")
+  story      story?
 }
 
-model Author {
-  id Int @id @default(autoincrement())
-  userId String @unique
-  user User @relation(fields: [userId], references: [id])
-  stories Story[]
-  created_at DateTime @default(now())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model genre {
+  id           BigInt         @id(map: "Genre_pkey") @default(autoincrement())
+  genre_name   String         @unique(map: "Genre_genre_name_key") @db.VarChar
+  created_at   DateTime       @default(now()) @db.Timestamptz(6)
+  story_genres story_genres[]
 }
 
-model Story {
-  id Int @id @default(autoincrement())
-  title String
-  genre String
-  description String
-  content String @db.Text // limit breaker sheesh
-  read_count Int
-  authorId Int 
-  author Author @relation(fields: [authorId], references: [id])
-  created_at DateTime @default(now())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model story {
+  id           BigInt         @id(map: "Story_pkey") @default(autoincrement())
+  title        String         @db.VarChar
+  description  String?        @db.VarChar
+  read_count   BigInt
+  author_Id    String         @unique(map: "Story_author_Id_key") @db.Uuid
+  created_at   DateTime       @default(now()) @db.Timestamptz(6)
+  author       author         @relation(fields: [author_Id], references: [id], onUpdate: Restrict, map: "Story_author_Id_fkey")
+  story_genres story_genres[]
 }
 
-model Follow {
-  id Int @id @default(autoincrement())
-  followerId String 
-  followingId String
-
-  follower User @relation("FollowerRelation", fields: [followerId], references: [id])
-  following User @relation("FollowingRelation", fields: [followingId], references: [id])
-
-  @@unique([followerId, followingId])
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model story_genres {
+  id         BigInt   @id @default(autoincrement())
+  story_id   BigInt
+  genre_id   BigInt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  genre      genre    @relation(fields: [genre_id], references: [id], onDelete: Cascade)
+  story      story    @relation(fields: [story_id], references: [id], onDelete: Cascade)
 }
 
-model FileUpload {
-  id String @id @default(uuid())
-  url String
-  filename String
-  mimetype String
-  createdAt DateTime @default(now())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user {
+  id          String   @id(map: "User_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name  String?  @db.VarChar
+  middle_name String?  @db.VarChar
+  last_name   String?  @db.VarChar
+  gender      String?  @db.VarChar
+  dob         DateTime @db.Date
+  username    String   @unique(map: "User_username_key") @db.VarChar
+  email       String   @unique(map: "User_email_key") @db.VarChar
+  password    String   @db.VarChar
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  author      author?
 }
-
-enum Gender {
-  male
-  female
-}
-
-model Upload {
-  id String @id @default(ulid())
-  userId String
-  fileName String
-  fileType String
-  fileSize Int
-  filePath String @unique
-  publicUrl String
-  uploaded Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
-}
-
