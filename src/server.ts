@@ -8,13 +8,15 @@ import { router } from './routes'
     
 
 const app = express()
-app.use("/api", router)
+app.use(express.json());
 app.use(cors({
     origin: "*",
     credentials: true,
     methods: ['POST', 'GET', 'PUT', 'DELETE']
 }));
 
+
+app.use("/api", router)
 const server = new ApolloServer({ 
     typeDefs,
     resolvers,  
