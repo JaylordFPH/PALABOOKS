@@ -25,13 +25,6 @@ const server = new ApolloServer({
     csrfPrevention: true
 });
 
-if (!process.env.DATABASE_URL) {
-  console.error("❌ DATABASE_URL is missing");
-  process.exit(1); // optional: fail fast
-} else {
-  console.log("✅ DATABASE_URL loaded:", process.env.DATABASE_URL);
-}
-
 async function startServer() {  
     await server.start();
     server.applyMiddleware({
