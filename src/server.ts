@@ -5,13 +5,16 @@ import express from 'express'
 import http from 'http'
 import cors from 'cors'
 import { prisma } from './lib/prismaConn'
+import { redis } from './lib/redisClient'
 import { typeDefs } from './graphql/typeDefs'
 import { createContext } from './lib/context'
 import { resolvers } from './graphql/resolvers'
 import { router } from './routes'
-
-console.log(process.env.DATABASE_URL);
+import {config} from "dotenv"
+config()
+console.log(process.env.ACCESS_TOKEN_SECRET!)
 const app = express()
+app.set("trust proxy", true);
 const httpServer = http.createServer(app);
 const server = new ApolloServer({ 
     typeDefs,
@@ -20,11 +23,12 @@ const server = new ApolloServer({
     
 });
 
-app.use(cors<cors.CorsRequest>({
+app.use(cors({
     origin: "*",
     credentials: true,
     methods: ['POST', 'GET', 'PUT', 'DELETE']
 }));
+
 app.use(express.json())
 app.use("/api", router)
 
@@ -36,21 +40,38 @@ async function startServer() {
         })
     );
 
-    //start the http server
     httpServer.listen({port: process.env.PORT || 4000}, () => {
         console.log(`🚀 Server ready at http://localhost:${process.env.PORT || 4000}/graphql`)
     });
     
+    
+    let isShutingDown = false;
+
     const shutdown = async () => {
+        if(isShutingDown) return
+        isShutingDown = true;
+
         console.log("Shutting down server...");
-        await server.stop();
-        await prisma.$disconnect();
-        console.log("Server shut down successfully.");
-        process.exit(0); //successful shutdown
+        try {
+            await server.stop();
+            console.log("Apollo Server stopped.");
+
+            await prisma.$disconnect()
+            console.log("Prisma disconnected.");
+
+            await redis.quit()
+            console.log("Redis connection closed.");
+
+        } catch (err) {
+            console.error("Error during shutdown:", err);
+        } finally {
+            console.log("Server shut down successfully.");
+            // setTimeout(() => process.exit(0), 100);
+        }
     }
 
-    process.on('SIGINT', shutdown); //CTRL+C goods for manual user shutdown 
-    process.on('SIGTERM', shutdown); //SIGTERM for graceful shutdown by process manager
+    process.once('SIGINT', async () =>  { await shutdown() }); //CTRL+C goods for manual user shutdown 
+    process.once('SIGTERM', async () => { await shutdown() }); //SIGTERM for graceful shutdown by process manager
 };
 
 startServer().catch(() => {

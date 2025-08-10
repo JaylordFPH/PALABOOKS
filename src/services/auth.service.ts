@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import { createAccessToken, createRefreshToken } from "./jwtUtils";
 import bcrypt from "bcrypt"
 import { UserService } from "./user.service";
+// import { getClientIp, createHashedClientSignature } from "../utils/securityUtils";
 
 type authResponse = {
     success: boolean;
@@ -21,16 +22,15 @@ function response(success: boolean, message: string, accessToken: string | null,
 
 export class AuthService {
     constructor(private prisma: PrismaClient) {}
-
     async signIn (email: string, password: string): Promise<authResponse> { 
         if (!email?.trim() || !password?.trim()) {
             return response(false,  "Invalid email or password.", null, null)
         }
 
         const user = await this.prisma.user.findUnique({where: {email}});
-        if(!user || (!await bcrypt.compare(password, user.password) )) { //plainText and hashed password comparison :D
-            return response(false, "Incorrect email or password.", null, null);
-        }
+        // if(!user || (!await bcrypt.compare(password, user.password) )) { //plainText and hashed password comparison :D
+        //     return response(false, "Incorrect email or password.", null, null);
+        // }
 
         if(!user) {
             return response(false, "Incorrect email or password.", null, null);
