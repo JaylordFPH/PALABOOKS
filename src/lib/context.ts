@@ -14,6 +14,7 @@ export type GraphQLContext = {
         authService: AuthService;
         userService: UserService;
     }
+    req?: Request
     res?: Response // Optional, if you need to set cookies or headers
 }
 
@@ -31,6 +32,7 @@ export async function createContext({req, res}: {req: Request, res: Response}): 
                 authService,
                 userService
             },
+            req,
             res
         }
     }
@@ -54,6 +56,7 @@ export async function createContext({req, res}: {req: Request, res: Response}): 
                     authService,
                     userService
                 },
+                req,
                 res
             }
         }
@@ -64,6 +67,7 @@ export async function createContext({req, res}: {req: Request, res: Response}): 
                 authService,
                 userService
             },
+            req,
             res
         }
     }

@@ -49,16 +49,46 @@ model story_genres {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model user {
-  id           String   @id(map: "User_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  first_name   String?  @db.VarChar
-  middle_name  String?  @db.VarChar
-  last_name    String?  @db.VarChar
-  gender       String?  @db.VarChar
-  dob          DateTime @db.Date
-  username     String   @unique(map: "User_username_key") @db.VarChar
-  email        String   @unique(map: "User_email_key") @db.VarChar
-  password     String   @db.VarChar
-  created_at   DateTime @default(now()) @db.Timestamptz(6)
-  display_name String?  @db.VarChar
-  author       author?
+  id            String         @id(map: "User_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name    String?        @db.VarChar
+  middle_name   String?        @db.VarChar
+  last_name     String?        @db.VarChar
+  gender        String?        @db.VarChar
+  dob           DateTime       @db.Date
+  username      String         @unique(map: "User_username_key") @db.VarChar
+  email         String         @unique(map: "User_email_key") @db.VarChar
+  password      String         @db.VarChar
+  created_at    DateTime       @default(now()) @db.Timestamptz(6)
+  display_name  String?        @db.VarChar
+  author        author?
+  last_login    last_login?
+  login_history login_history?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model last_login {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String   @unique @db.Uuid
+  last_ip          String   @db.Inet
+  last_city        String   @db.VarChar
+  last_country     String   @db.VarChar
+  last_device_hash String   @db.VarChar
+  last_login_at    DateTime @default(now()) @db.Timestamp(6)
+  last_region_name String
+  user             user     @relation(fields: [user_id], references: [id], onUpdate: Restrict)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model login_history {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String   @unique @db.Uuid
+  ip                 BigInt
+  city               String   @db.VarChar
+  country            String   @db.VarChar
+  debice_hash        String   @db.VarChar
+  login_at           DateTime @db.Timestamp(6)
+  risk_score         Int
+  is_current_session Boolean
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  user               user     @relation(fields: [user_id], references: [id], onUpdate: Restrict)
 }
