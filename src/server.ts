@@ -12,7 +12,7 @@ import { resolvers } from './graphql/resolvers'
 import { router } from './routes'
 import {config} from "dotenv"
 config()
-console.log(process.env.ACCESS_TOKEN_SECRET!)
+
 const app = express()
 app.set("trust proxy", true);
 const httpServer = http.createServer(app);

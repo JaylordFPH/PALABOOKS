@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { prisma } from '../lib/prismaConn';
+import { redis } from "../lib/redisClient";
 import { getClientIp, createHashedClientSignature } from "../utils/securityUtils";
 import {createClient} from "redis"
 
@@ -16,13 +16,29 @@ const client = createClient({
 client.on('error', err => console.log('Redis Client Error', err));
 
 
-getUsersRouter.get("/", async (req, res) => {
-    await client.connect();
-    await client.flushAll()
-    const result = await client.get('foo');
-    console.log(result)  
-    const ip = getClientIp(req)
-    const hashedDP = createHashedClientSignature(req)
-    const { country, regionName, city} = await fetch(`http://ip-api.com/json/${ip}?fields=country,regionName,city`).then( (data) =>  data.json())
-    return res.status(200).json({success: true, data: {ip, country, regionName, city, device_hash: hashedDP,}})
+getUsersRouter.get("/", async (req, res) => {  
+    try {
+        const cachedPhotos = await redis.get("photos");
+
+        if (cachedPhotos) {
+            // Return parsed cached data
+            const parsedPhotos = JSON.parse(cachedPhotos)
+            const start = 0
+            const limit = 10
+            const photos = parsedPhotos.slice(start, limit)
+            return res.status(200).json({ data: photos});
+        }
+
+        // If not in cache, fetch from API
+        const data = await fetch("https://jsonplaceholder.typicode.com/photos")
+            .then(res => res.json());
+
+        // Store in Redis (as string)
+        await redis.set("photos", JSON.stringify(data), { EX: 3600 }); // expire in 1 hour
+    
+        return res.status(200).json({ data });
+    } catch (err) {
+        console.error("Error fetching photos:", err);
+        return res.status(500).json({ error: "Failed to fetch photos" });
+    }
 });

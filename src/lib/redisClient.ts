@@ -17,4 +17,3 @@ redis.on("error", (err) => {
 });
 
 redis.connect();
-
