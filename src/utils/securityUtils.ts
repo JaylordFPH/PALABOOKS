@@ -17,7 +17,6 @@ export function createHashedClientSignature (req: Request) {
         secChUaPlatform: req.headers["sec-ch-ua-platform"] || "",
         secChUaMobile: req.headers["sec-ch-ua-mobile"] || "",
     }
-    console.log(deviceFingerprint)
     const parsedDF = JSON.stringify(deviceFingerprint)
     return crypto.createHash("sha256").update(parsedDF).digest("hex")
 }
