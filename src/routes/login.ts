@@ -44,21 +44,16 @@ async function checkSWL(key: string, limit: number, ttlSeconds: number): Promise
         local ttl = tonumber(ARGV[4])
         local unique_value = ARGV[5]
         
-        -- Remove expired entries
         redis.call('ZREMRANGEBYSCORE', key, 0, window_start)
-        
-        -- Count current entries
+
         local current_count = redis.call('ZCARD', key)
-        
-        -- If we're at or over limit, reject
+
         if current_count >= limit then
             return 0
         end
-        
-        -- Add new entry
+
         redis.call('ZADD', key, now, unique_value)
         
-        -- Set expiry
         redis.call('EXPIRE', key, ttl)
         
         return 1
@@ -66,21 +61,20 @@ async function checkSWL(key: string, limit: number, ttlSeconds: number): Promise
     
     try {
         const uniqueValue = `${now}-${Math.random()}`;
-        
-        // Correct format for most Redis clients: eval(script, numKeys, ...keys, ...args)
+
         const result = await redis.eval(
             luaScript,
             {
                 keys: [key],
                 arguments: [
                     windowStart.toString(),
-                    limit.toString(), 
+                    limit.toString(),
                     now.toString(),
                     (ttlSeconds * 2).toString(),
                     uniqueValue
                 ]
             }
-        ) as number;
+        ) as number
         
         return result === 1;
         

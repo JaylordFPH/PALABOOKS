@@ -5,6 +5,7 @@ import { AuthService } from "../services/auth.service";
 import { UserService } from "../services/user.service";
 import { Request, Response } from "express";
 import { TokenExpiredError } from "jsonwebtoken";
+import { createHashedClientSignature, getClientIp } from "../utils/securityUtils";
 
 export type GraphQLContext = {
     prisma: PrismaClient

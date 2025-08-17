@@ -1,5 +1,6 @@
 import { Request } from "express";
 import crypto from "crypto"
+import { redis } from "../lib/redisClient";
 
 export function getClientIp(req: Request) {
     const forwarded = req.headers["x-forwarded-for"]
@@ -20,3 +21,4 @@ export function createHashedClientSignature (req: Request) {
     const parsedDF = JSON.stringify(deviceFingerprint)
     return crypto.createHash("sha256").update(parsedDF).digest("hex")
 }
+

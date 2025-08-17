@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
 
-export function formatGraphQLError(error: unknown): GraphQLError {
+export function handleGraphQLError(error: unknown): GraphQLError {
     if(error instanceof GraphQLError) {
-        return error;
+        throw error;
     }
 
     if(error instanceof Error) {
