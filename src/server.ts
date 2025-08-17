@@ -36,45 +36,93 @@ async function startServer() {
     await server.start();
     app.use('/graphql',
         expressMiddleware(server, {
-            context: ({req, res}) => createContext({req, res}),
+            context: async ({req, res}) => await createContext({req, res}),
         })
     );
-
+    
     httpServer.listen({port: process.env.PORT || 4000}, () => {
         console.log(`🚀 Server ready at http://localhost:${process.env.PORT || 4000}/graphql`)
     });
-    
-    
-    let isShutingDown = false;
-
-    const shutdown = async () => {
-        if(isShutingDown) return
-        isShutingDown = true;
-
-        console.log("Shutting down server...");
-        try {
-            await server.stop();
-            console.log("Apollo Server stopped.");
-
-            await prisma.$disconnect()
-            console.log("Prisma disconnected.");
-
-            await redis.quit()
-            console.log("Redis connection closed.");
-
-        } catch (err) {
-            console.error("Error during shutdown:", err);
-        } finally {
-            console.log("Server shut down successfully.");
-            // setTimeout(() => process.exit(0), 100);
-        }
-    }
-
-    process.once('SIGINT', async () =>  { await shutdown() }); //CTRL+C goods for manual user shutdown 
-    process.once('SIGTERM', async () => { await shutdown() }); //SIGTERM for graceful shutdown by process manager
 };
 
-startServer().catch(() => {
-    console.error("Error starting server");
-    process.exit(1); //exit with error code
+const SHUTDOWN_TIMEOUT_MS = 10000
+let isShuttingDown = false
+
+const shutdown = async (signal: string, isFatal: boolean) => {
+    if (isShuttingDown) return
+    isShuttingDown = true;
+
+    console.log(`🟡 Received ${signal}. Starting graceful shutdown...`)
+    
+    const shutdownTimeout = setTimeout(() => {
+        console.error("🟡 Shutdown timeout reached. Forcing exit.")
+        process.exit(1)
+    }, SHUTDOWN_TIMEOUT_MS) ;
+
+    try {
+        // Stop Apollo Server
+        console.log('🔵 Stopping Apollo Server...')
+        await server.stop();
+        console.log('🟢 Apollo Server stopped')
+
+        
+        // Close HTTP server
+        console.log('🔵 Closing HTTP server...')
+        await new Promise<void>((resolve) => {
+            // Check if server is still listening
+            if (httpServer.listening) {
+                httpServer.close((err) => {
+                    if (err && (err as NodeJS.ErrnoException).code !== 'ERR_SERVER_NOT_RUNNING') {
+                        console.error('🟠 HTTP server close error:', err.message)
+                    } 
+                    console.log('🟢 Manually closed HTTP server.')
+                    resolve()
+                });
+                
+            } else {
+                console.log('🔵 HTTP server already closed by Apollo plugin.')
+                resolve()
+            }
+        });
+
+        // Close database connections
+        console.log("🔵 Disconnecting from database...")
+        await prisma.$disconnect()
+        console.log('🟢 Database disconnected')
+        // Close Redis connection
+        console.log('🔵 Closing Redis connection...')
+        await redis.quit()
+        console.log('🟢 Redis connection closed')
+        
+        clearTimeout(shutdownTimeout)
+
+        if(isFatal) {
+            console.log(`🔴 Server terminated due to fatal error.`);
+            process.exit(1)
+        } else {
+            console.log("🟢 Server shut down gracefully")
+            process.exit(0)
+        }
+    } catch (error) {
+        clearTimeout(shutdownTimeout)
+        console.error('🔴 Error during shutdown:', error)
+        process.exit(1)
+    }
+}
+
+process.once('SIGINT', (sig) => shutdown(sig, false))   
+process.once('SIGTERM', (sig) => shutdown(sig, false)) 
+
+process.on("uncaughtException", (error) => {
+    console.log("🔴 Uncaught Exception:", error)
+    shutdown("UNCAUGHT_EXCEPTION", true)
+});
+
+process.on("unhandledRejection", (error) => {
+    console.log("🔴 Unhandled Rejection:", error);
+    shutdown("UNHANDLED_REJECTION", true)
+});
+startServer().catch((error) => {
+    console.error("🔴 Error starting server", error);
+    process.exit(1); 
 });
